@@ -1,0 +1,21 @@
+package: cloud.lazycat.app.trek-travel
+version: 4.3.3-8
+name: Trek
+description: 自托管的实时协作旅行规划器，内置交互式地图、预算跟踪、行李清单、行程日志与 AI 助手，支持 23 种语言
+author: liketrek
+license: AGPL-3.0
+homepage: https://github.com/liketrek/TREK
+min_os_version: 1.5.0
+permissions:
+  required:
+    - net.internet
+locales:
+  zh-CN:
+    name: Trek 旅行规划
+    description: 自托管的实时协作旅行规划器：交互式地图、每日行程拖拽规划、预算跟踪、行李清单、预订管理、PDF 导出与 AI 助手，数据完全由自己掌控
+  en-US:
+    name: Trek
+    description: >-
+      A self-hosted, real-time collaborative travel planner with interactive
+      maps, drag & drop day planning, budgets, packing lists, bookings, PDF
+      export and a built-in AI assistant

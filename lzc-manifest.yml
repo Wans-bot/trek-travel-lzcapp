@@ -1,0 +1,51 @@
+usage: |
+  Trek 是一台运行在懒猫微服上的自托管旅行规划器，支持多人实时协作规划行程。
+
+  使用方法：
+  1. 打开应用，懒猫账号免密自动登录（首次访问自动创建管理员账号，数据保存在本机）
+  2. 在「My Trips」创建行程，拖拽规划每日行程、添加地点与照片标记
+  3. 支持预算跟踪、行李清单、预订/机票/酒店管理、PDF 导出行程
+  4. 可与家人朋友通过邀请链接实时协作编辑
+
+  说明：
+  - 数据保存在 /lzcapp/var 下，升级/重启不会丢失
+  - 地图使用 Leaflet + OpenStreetMap，天气使用 Open-Meteo，均无需额外 API Key
+  - 管理员账号：admin@trek.local / Trek@Lazy2026!（登录后请及时修改密码）
+  - 高级功能（AI 解析、MCP、Passkeys）可在 管理面板 中按需开启
+application:
+  subdomain: trek-travel
+  oidc_redirect_path: /api/auth/oidc/callback
+  upstreams:
+    - location: /
+      backend: http://trek.cloud.lazycat.app.trek-travel.lzcapp:3000
+      disable_trim_location: true
+  injects:
+    - id: auto-login
+      'on': browser
+      when:
+        - /*
+      do:
+        - src: file:///lzcapp/pkg/content/auto-login.js
+services:
+  trek:
+    image: registry.lazycat.cloud/wans/mauriceboe/trek:8d46175be976f819
+    binds:
+      - /lzcapp/var/data:/app/data
+      - /lzcapp/var/uploads:/app/uploads
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - TZ=Asia/Shanghai
+      - DEFAULT_LANGUAGE=zh
+      - COOKIE_SECURE=false
+      - ADMIN_EMAIL=admin@trek.local
+      - ADMIN_PASSWORD=Trek@Lazy2026!
+    command: >-
+      sh -c 'export APP_URL="https://$${LAZYCAT_APP_DOMAIN}"; export
+      ALLOWED_ORIGINS="https://$${LAZYCAT_APP_DOMAIN},http://trek.cloud.lazycat.app.trek-travel.lzcapp:3000,http://192.168.31.44:18791";
+      if [ -n "$${LAZYCAT_AUTH_OIDC_CLIENT_ID}" ]; then
+        export OIDC_ISSUER="$${LAZYCAT_AUTH_OIDC_ISSUER_URI}";
+        export OIDC_CLIENT_ID="$${LAZYCAT_AUTH_OIDC_CLIENT_ID}";
+        export OIDC_CLIENT_SECRET="$${LAZYCAT_AUTH_OIDC_CLIENT_SECRET}";
+        export OIDC_DISPLAY_NAME="懒猫账号";
+      fi; exec /usr/local/bin/trek-entrypoint'
