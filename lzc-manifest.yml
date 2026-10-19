@@ -28,7 +28,8 @@ application:
         - src: file:///lzcapp/pkg/content/auto-login.js
 services:
   trek:
-    image: registry.lazycat.cloud/wans/mauriceboe/trek:8d46175be976f819
+    # upstream: docker.io/mauriceboe/trek:4.3.3
+    image: registry.lazycat.cloud/wans/mauriceboe/trek:1b7aca4a06b953c8
     binds:
       - /lzcapp/var/data:/app/data
       - /lzcapp/var/uploads:/app/uploads
@@ -41,9 +42,8 @@ services:
       - ADMIN_EMAIL=admin@trek.local
       - ADMIN_PASSWORD=Trek@Lazy2026!
     command: >-
-      sh -c 'export APP_URL="https://$${LAZYCAT_APP_DOMAIN}"; export
-      ALLOWED_ORIGINS="https://$${LAZYCAT_APP_DOMAIN},http://trek.cloud.lazycat.app.trek-travel.lzcapp:3000,http://192.168.31.44:18791";
-      if [ -n "$${LAZYCAT_AUTH_OIDC_CLIENT_ID}" ]; then
+      sh -c 'export APP_URL="https://$${LAZYCAT_APP_DOMAIN}"; export ALLOWED_ORIGINS="https://$${LAZYCAT_APP_DOMAIN},http://trek.cloud.lazycat.app.trek-travel.lzcapp:3000,http://192.168.31.44:18791"; if [ -n "$${LAZYCAT_AUTH_OIDC_CLIENT_ID}" ]; then
+
         export OIDC_ISSUER="$${LAZYCAT_AUTH_OIDC_ISSUER_URI}";
         export OIDC_CLIENT_ID="$${LAZYCAT_AUTH_OIDC_CLIENT_ID}";
         export OIDC_CLIENT_SECRET="$${LAZYCAT_AUTH_OIDC_CLIENT_SECRET}";
